@@ -1,6 +1,12 @@
-let express = require('express')
-let db = require('../scripts/db')
-let router = express.Router()
+const express = require('express')
+const db = require('../scripts/db')
+const router = express.Router()
+const passport = require('passport')
+const session = require('express-session')
+
+initializePassport = require('../scripts/pass-configs')
+
+initializePassport(passport, db.getUserByName, db.getUserByID)
 
 //Test data
 let users = [
@@ -10,6 +16,16 @@ let users = [
   ];
   
 
+//session configs
+router.use(session({
+    secret: 'abcd',
+    resave: false,
+    saveUninitialized: false,
+}))
+
+//passport middleware
+router.use(passport.initialize())
+router.use(passport.session())
 
 //Home
 router.get('/', function (req, res) {
@@ -17,11 +33,6 @@ router.get('/', function (req, res) {
 })
 
 /// User endpoints ///
-
-//get list of users
-router.get('/users', (req, res) =>{
-    res.send({ title: 'Users', users: users });
-})
 
 //create user
 router.post('/register', async (req, res) =>{
@@ -45,16 +56,15 @@ router.post('/register', async (req, res) =>{
 })
 
 //Login
-router.post('/login', function (req, res) {
-    let userIndex = users.findIndex(x => x.name ===req.body.name);
-    if (userIndex>-1) {
-        res.send(users[userIndex])
-    } else {
-        var err = new Error('cannot find user ' + req.body.name);
-        res.status = 404;
-        res.send(err)
-    }
-})
+router.post('/login',passport.authenticate('local', { failWithError: true }),function(req, res, next) {
+    // handle success
+    res.redirect('/');
+    },
+    function(err, req, res, next) {
+    // handle error
+    console.log(err)
+    return res.json({sucess: 'false'});
+});
 
 
 /// products endpoints ///
