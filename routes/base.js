@@ -1,8 +1,9 @@
-var express = require('express')
-var router = express.Router()
+let express = require('express')
+let db = require('../scripts/db')
+let router = express.Router()
 
 //Test data
-var users = [
+let users = [
     { name: 'test1', email: 'test1@tex.com' },
     { name: 'test2', email: 'test2@tex.com' },
     { name: 'test3', email: 'test3@tex.com' }
@@ -18,17 +19,19 @@ router.get('/', function (req, res) {
 /// User endpoints ///
 
 //get list of users
-router.get('/users', function (req, res) {
+router.get('/users', (req, res) =>{
     res.send({ title: 'Users', users: users });
 })
 
 //create user
-router.post('/register', function (req, res) {
+router.post('/register', async (req, res) =>{
     let userIndex = users.findIndex(x => x.name ===req.body.name);
-    if (userIndex==-1) {
-        if (req.body.email){
-            users.push({name: req.body.name, email: req.body.email})
-            res.send('added new user')
+    const userInDB = await db.getUserByName(req.body.name)
+    
+    if (!userInDB) {
+        if (req.body.email&&req.body.password){
+            db.addUserToDB({userName: req.body.name, email: req.body.email, password: req.body.password})
+            res.send('added new user to database')
         }
         else{
             var err = new Error('Missing user name');
