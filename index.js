@@ -19,5 +19,6 @@ app.use(bodyParser.json())
 var base = require("./routes/base");
 app.use(base);
 
+
 //connect to DB
 db.connect()
