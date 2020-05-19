@@ -144,13 +144,37 @@ router.get('/api/warehouses', async (req,res)=>{
 /// stock endpoints ///
 
 //get stock in warehouse
-
+router.get('/api/warehousestock/:warehouse', async (req,res)=>{
+    if (req.params.warehouse){
+        const stock = await db.getWarehouseStock(req.params.warehouse)
+        res.send(stock)
+    }
+    else {
+        var err = new Error('missing info');
+        res.status = 400;
+        res.send(err)
+    }
+})
 //get stock by warehouse name and product name
 
 //add to stock
-router.post('/api/addstock', async (req, res) =>{
+router.put('/api/stock', async (req, res) =>{
     if (req.body.product && req.body.warehouse && req.body.amount){
         db.insertInStock(req.body.product, req.body.warehouse, req.body.amount)
+        res.send('added to stock')
+    }
+    else {
+        var err = new Error('missing info');
+        res.status = 400;
+        res.send(err)
+    }
+})
+
+//remove from stock
+router.put('/api/unstock', async (req, res) =>{
+    if (req.body.product && req.body.warehouse && req.body.amount){
+        
+        db.removefromStock(req.body.product, req.body.warehouse, req.body.amount)
         res.send('added to stock')
     }
     else {
