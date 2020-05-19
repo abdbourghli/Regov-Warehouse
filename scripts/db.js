@@ -10,6 +10,8 @@ const con = mysql.createConnection({
     database: process.env.DB_NAME
   });
 
+/// users events///
+
 //adding hash value to the passVault table and link it with the user id
 const commitUserPass = (userID, userHash)=>{
     const inserUserQuery = `INSERT INTO passVault (userID, passHash) VALUES 
@@ -118,6 +120,45 @@ exports.getUserHash = id=>{
             else {
                 resolve (null)
             }
+          });
+    })
+}
+
+/// products events///
+
+//fetch a product by the product name
+exports.getProductByName = productName=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM products WHERE Name = "${productName}"`, async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                resolve (productName)
+            }
+            else {
+                resolve (null)
+            }
+          });
+    })
+}
+
+//inset product to the Database
+exports.addProductToDB = async product=>{
+    console.log(product)
+    const inserUserQuery = `INSERT INTO products (Name) VALUES ("${product.name}")`;
+    con.query(inserUserQuery, async function (err, result) {
+    if (err) throw err;
+    else{
+        console.log(product)
+        console.log("1 record inserted")
+        // console.log(result)
+    }
+  });
+}
+exports.getAllProducts = ()=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM products`, async function (err, result, fields) {
+            if (err) reject (err);
+            resolve (result)
           });
     })
 }
