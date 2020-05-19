@@ -163,6 +163,45 @@ exports.getAllProducts = ()=>{
     })
 }
 
+/// warehouse events///
+
+//fetch a warehouse by the warehouse name
+exports.getWarehouseByName = warehouseName=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM warehouse WHERE Name = "${warehouseName}"`, async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                resolve (result[0])
+            }
+            else {
+                resolve (null)
+            }
+          });
+    })
+}
+
+//insert warehouse to DB
+exports.addWarehouseToDB = async warehouse=>{
+    const inserUserQuery = `INSERT INTO warehouse (Name) VALUES ("${warehouse.name}")`;
+    con.query(inserUserQuery, async function (err, result) {
+    if (err) throw err;
+    else{
+        console.log(warehouse)
+        console.log("1 record inserted")
+        // console.log(result)
+    }
+  });
+}
+exports.getAllWarehouses= ()=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM warehouse`, async function (err, result, fields) {
+            if (err) reject (err);
+            resolve (result)
+          });
+    })
+}
+
+
 //Conect to DB
 exports.connect = ()=>{con.connect(function(err) {
     if (err) throw err;
