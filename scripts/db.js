@@ -206,30 +206,26 @@ exports.getAllWarehouses= ()=>{
 //fetch item stock in a specific warehouse by id
 exports.getStockByProductAndWarehosueI = (productId,warehouseId)=>{
     return new Promise((resolve,reject)=>{
-        if (productItem && warehouseItem){
-            con.query(`SELECT * FROM stock WHERE product = "${productId}" AND warehouse = "${warehouseId}"`, async function (err, result, fields) {
-                if (err) reject (err);
-                if(result[0]){
-                    resolve (result[0])
-                }
-                else {
-                    resolve (null)
-                }
-            });
-        }
-        else{
-            resolve(null)
-        }
+        con.query(`SELECT * FROM stock WHERE product = "${productId}" AND warehouse = "${warehouseId}"`, async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                resolve (result[0])
+            }
+            else {
+                resolve (null)
+            }
+        });
     })
 }
 
 //fetch item stock in a specific warehouse by name
 exports.getStockByProductAndWarehosueN = (productName,warehouseName)=>{
     return new Promise( async (resolve,reject)=>{
-        const productItem = exports.getProductByName(productName)
-        const warehouseItem = exports.getWarehouseByName(warehouseName)
+        const productItem = await exports.getProductByName(productName)
+        const warehouseItem = await exports.getWarehouseByName(warehouseName)
         if (productItem && warehouseItem){
-            resolve(await getStockByProductAndWarehosueI(productItem.ID, warehouseItem.ID))
+            console.log(productItem,warehouseItem)
+            resolve(await exports.getStockByProductAndWarehosueI(productItem.ID, warehouseItem.ID))
         }
         else{
             resolve(null)
@@ -238,11 +234,11 @@ exports.getStockByProductAndWarehosueN = (productName,warehouseName)=>{
 }
 
 //insert in stock
-exports.insertInStock = (productName, warehosueName, amount)=>{
-    const itemStock = getStockByProductAndWarehosueN(productName, warehosueName)
+exports.insertInStock = async (productName, warehouseName, amount)=>{
+    const itemStock = await exports.getStockByProductAndWarehosueN(productName, warehouseName)
     if (!itemStock){
-        const productItem = exports.getProductByName(productName)
-        const warehouseItem = exports.getWarehouseByName(warehouseName)
+        const productItem = await exports.getProductByName(productName)
+        const warehouseItem = await exports.getWarehouseByName(warehouseName)
 
         const Query = `INSERT INTO stock (product, warehouse, amount) VALUES ("${productItem.ID}", "${warehouseItem.ID}", "${amount}")`;
         con.query(Query, async function (err, result) {
@@ -254,13 +250,13 @@ exports.insertInStock = (productName, warehosueName, amount)=>{
         });
     }
     else {
-        exports.addToStock(itemStock.ID, amount)
+        exports.addToStock(itemStock, amount)
     }
 }
 
 //add to stock in a specific warehouse
-exports.addToStock = (stockID, amount)=>{
-    const Query = `UPDATE stock SET amount = ${amount} where ID = ${stockID}`;
+exports.addToStock = (stock, amount)=>{
+    const Query = `UPDATE stock SET amount = ${amount+stock.amount} where ID = ${stock.ID}`;
     con.query(Query, async function (err, result) {
         if (err) throw err;
         else{
