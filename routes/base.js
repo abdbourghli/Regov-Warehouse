@@ -99,7 +99,20 @@ router.get('/api/products', async (req,res)=>{
     }
 })
 
-/// products endpoints ///
+//remove product by product name
+router.delete('/api/product/:name', async (req,res)=>{
+    const product = await db.getProductByName(req.params.name)
+    if (product){
+        db.removeProduct(product)
+        res.send('product removed')
+
+    }
+    else{
+        res.send("Product doesn't exests in DataBase")
+    }
+})
+
+/// warehouse endpoints ///
 
 //add warehouse
 router.post('/api/addwarehouse', async (req, res) =>{
@@ -141,6 +154,19 @@ router.get('/api/warehouses', async (req,res)=>{
     }
 })
 
+//remove product by warehouse name
+router.delete('/api/warehouse/:name', async (req,res)=>{
+    const warehouse = await db.getWarehouseByName(req.params.name)
+    if (warehouse){
+        db.removeWarehouse(warehouse)
+        res.send('warehouse removed')
+
+    }
+    else{
+        res.send("warehouse doesn't exests in DataBase")
+    }
+})
+
 /// stock endpoints ///
 
 //get stock in warehouse
@@ -173,7 +199,7 @@ router.put('/api/stock', async (req, res) =>{
 //remove from stock
 router.put('/api/unstock', async (req, res) =>{
     if (req.body.product && req.body.warehouse && req.body.amount){
-        
+
         db.removefromStock(req.body.product, req.body.warehouse, req.body.amount)
         res.send('added to stock')
     }
