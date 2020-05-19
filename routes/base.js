@@ -25,7 +25,6 @@ router.get('/users', (req, res) =>{
 
 //create user
 router.post('/register', async (req, res) =>{
-    let userIndex = users.findIndex(x => x.name ===req.body.name);
     const userInDB = await db.getUserByName(req.body.name)
     
     if (!userInDB) {
@@ -58,5 +57,46 @@ router.post('/login', function (req, res) {
 })
 
 
+/// products endpoints ///
+
+//add product
+router.post('/api/addproduct', async (req, res) =>{
+    //check that product doesn't already exists
+    const productInDB = await db.getProductByName(req.body.name)
+    if (!productInDB) {
+        //add the product to db
+        db.addProductToDB({name:req.body.name})
+        res.send('added new product to database')
+    } else {
+        var err = new Error('Product already exists' + req.body.name);
+        res.status = 400;
+        res.send(err)
+    }
+})
+
+//fetch a product
+router.get('/api/product/:name', async (req,res)=>{
+    if (req.params.name){
+        const reqProduct = await db.getProductByName(req.params.name)
+        if (reqProduct){
+            res.send(reqProduct)
+        }
+        else{
+            res.status = 404
+            res.send(`${req.param.name} doesn't exists.`)
+        }
+    }
+})
+
+//fetch all products
+router.get('/api/products', async (req,res)=>{
+    const reqProduct = await db.getAllProducts(req.params.name)
+    if (reqProduct){
+        res.send(reqProduct)
+    }
+    else{
+        res.send("No products in DataBase")
+    }
+})
 
 module.exports = router
