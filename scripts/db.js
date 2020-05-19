@@ -265,6 +265,39 @@ exports.addToStock = (stock, amount)=>{
         }
     });
 }
+
+//remove from stock in a specific warehouse
+exports.removefromStock = async (productName, warehouseName, amount)=>{
+    const stock = await exports.getStockByProductAndWarehosueN(productName, warehouseName)
+    if (stock&&stock.amount-amount>=0){
+        const Query = `UPDATE stock SET amount = ${stock.amount-amount} where ID = ${stock.ID}`;
+        con.query(Query, async function (err, result) {
+            if (err) throw err;
+            else{
+                console.log("1 record Updated")
+                // console.log(result)
+            }
+        });
+    }
+}
+
+//get all the stocks in a specific warehouse
+exports.getWarehouseStock = async (warehouseName)=>{
+    const warehouse = await exports.getWarehouseByName(warehouseName)
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM stock WHERE warehouse = "${warehouse.ID}"`, async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                resolve (result)
+            }
+            else {
+                resolve (null)
+            }
+        });
+    })
+}
+
+
 //Conect to DB
 exports.connect = ()=>{con.connect(function(err) {
     if (err) throw err;
