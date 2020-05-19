@@ -2,7 +2,7 @@
 
 # user
 ### login
-POST /login
+```POST /login```
 ```
 {
   "userName": String,
@@ -21,9 +21,11 @@ POST /register
 # Products
 ### add product
 POST /api/addproduct
+```
 {
-  name: String
+  "name": String
 }
+```
 
 ### find product
 GET /api/product/{Name}
@@ -37,9 +39,11 @@ DELETE /api/product/{Name}
 # Warehouse
 ### add warehouse
 POST /api/addwarehouse
+```
 {
-  name: String
+  "name": String
 }
+```
 
 ### find warehouse
 GET /api/warehouse/{name}
@@ -56,16 +60,20 @@ GET /api/warehousestock/{warehouse}
 
 ### add stock
 PUT /api/stock
+```
 {
-  product: String,
-  warehouse: String,
-  amount: Int
+  "product": String,
+  "warehouse": String,
+  "amount": Int
 }
+```
 
 ### remove stock
 PUT /api/unstock
+```
 {
-  product: String,
-  warehouse: String,
-  amount: Int
+  "product": String,
+  "warehouse": String,
+  "amount": Int
 }
+```
