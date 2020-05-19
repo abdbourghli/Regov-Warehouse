@@ -2,7 +2,7 @@ const mysql = require('mysql'),
     passHash = require('./pass-hash')
 require('dotenv').config()
 
-//login info to DN
+//login info to DB
 const con = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -163,6 +163,13 @@ exports.getAllProducts = ()=>{
     })
 }
 
+//remove product
+exports.removeProduct = async (product)=>{
+    con.query(`DELETE FROM products WHERE ID = ${product.ID}`, async function (err, result, fields) {
+        if (err) reject (err);
+      });
+}
+
 /// warehouse events///
 
 //fetch a warehouse by the warehouse name
@@ -199,6 +206,13 @@ exports.getAllWarehouses= ()=>{
             resolve (result)
           });
     })
+}
+
+//remove warehouse
+exports.removeWarehouse = async (warehouse)=>{
+    con.query(`DELETE FROM warehouse WHERE ID = ${warehouse.ID}`, async function (err, result, fields) {
+        if (err) reject (err);
+      });
 }
 
 /// stock events///
