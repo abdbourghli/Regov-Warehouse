@@ -1,14 +1,14 @@
 # Regov-Warehouse
 
-#user
-###login
+# user
+### login
 POST /login
 {
   userName: String,
   password: String
 }
 
-###Register
+### Register
 POST /register
 {
   userName: String,
@@ -16,43 +16,43 @@ POST /register
   password: String
 }
 
-#Products
-###add product
+# Products
+### add product
 POST /api/addproduct
 {
   name: String
 }
 
-###find product
+### find product
 GET /api/product/{Name}
 
-###list all products
+### list all products
 GET /api/products
 
-###remove a product
+### remove a product
 DELETE /api/product/{Name}
 
-#Warehouse
-###add warehouse
+# Warehouse
+### add warehouse
 POST /api/addwarehouse
 {
   name: String
 }
 
-###find warehouse
+### find warehouse
 GET /api/warehouse/{name}
 
-###list all warehouses
+### list all warehouses
 GET /api/warehouses
 
-###remove a warehouse
+### remove a warehouse
 DELETE /api/warehouse/{name}
 
-#Stocks
-###get stock in warehouse
+# Stocks
+### get stock in warehouse
 GET /api/warehousestock/{warehouse}
 
-###add stock
+### add stock
 PUT /api/stock
 {
   product: String,
@@ -60,7 +60,7 @@ PUT /api/stock
   amount: Int
 }
 
-###remove stock
+### remove stock
 PUT /api/unstock
 {
   product: String,
