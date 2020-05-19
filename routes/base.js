@@ -18,7 +18,7 @@ let users = [
 
 //session configs
 router.use(session({
-    secret: 'abcd',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
 }))
