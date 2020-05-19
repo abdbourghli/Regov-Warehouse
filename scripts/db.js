@@ -201,7 +201,74 @@ exports.getAllWarehouses= ()=>{
     })
 }
 
+/// stock events///
 
+//fetch item stock in a specific warehouse by id
+exports.getStockByProductAndWarehosueI = (productId,warehouseId)=>{
+    return new Promise((resolve,reject)=>{
+        if (productItem && warehouseItem){
+            con.query(`SELECT * FROM stock WHERE product = "${productId}" AND warehouse = "${warehouseId}"`, async function (err, result, fields) {
+                if (err) reject (err);
+                if(result[0]){
+                    resolve (result[0])
+                }
+                else {
+                    resolve (null)
+                }
+            });
+        }
+        else{
+            resolve(null)
+        }
+    })
+}
+
+//fetch item stock in a specific warehouse by name
+exports.getStockByProductAndWarehosueN = (productName,warehouseName)=>{
+    return new Promise( async (resolve,reject)=>{
+        const productItem = exports.getProductByName(productName)
+        const warehouseItem = exports.getWarehouseByName(warehouseName)
+        if (productItem && warehouseItem){
+            resolve(await getStockByProductAndWarehosueI(productItem.ID, warehouseItem.ID))
+        }
+        else{
+            resolve(null)
+        }
+    })
+}
+
+//insert in stock
+exports.insertInStock = (productName, warehosueName, amount)=>{
+    const itemStock = getStockByProductAndWarehosueN(productName, warehosueName)
+    if (!itemStock){
+        const productItem = exports.getProductByName(productName)
+        const warehouseItem = exports.getWarehouseByName(warehouseName)
+
+        const Query = `INSERT INTO stock (product, warehouse, amount) VALUES ("${productItem.ID}", "${warehouseItem.ID}", "${amount}")`;
+        con.query(Query, async function (err, result) {
+            if (err) throw err;
+            else{
+                console.log("1 record inserted")
+                // console.log(result)
+            }
+        });
+    }
+    else {
+        exports.addToStock(itemStock.ID, amount)
+    }
+}
+
+//add to stock in a specific warehouse
+exports.addToStock = (stockID, amount)=>{
+    const Query = `UPDATE stock SET amount = ${amount} where ID = ${stockID}`;
+    con.query(Query, async function (err, result) {
+        if (err) throw err;
+        else{
+            console.log("1 record Updated")
+            // console.log(result)
+        }
+    });
+}
 //Conect to DB
 exports.connect = ()=>{con.connect(function(err) {
     if (err) throw err;

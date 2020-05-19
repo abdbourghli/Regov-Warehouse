@@ -141,4 +141,22 @@ router.get('/api/warehouses', async (req,res)=>{
     }
 })
 
+/// stock endpoints ///
+
+//get stock in warehouse
+
+//get stock by warehouse name and product name
+
+//add to stock
+router.post('/api/addstock', async (req, res) =>{
+    if (req.body.product && req.body.warehouse && req.body.amount){
+        db.insertInStock(req.body.product, req.body.warehouse, req.body.amount)
+        res.send('added to stock')
+    }
+    else {
+        var err = new Error('missing info');
+        res.status = 400;
+        res.send(err)
+    }
+})
 module.exports = router
