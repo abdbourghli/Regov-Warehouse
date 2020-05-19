@@ -132,7 +132,7 @@ exports.getProductByName = productName=>{
         con.query(`SELECT * FROM products WHERE Name = "${productName}"`, async function (err, result, fields) {
             if (err) reject (err);
             if(result[0]){
-                resolve (productName)
+                resolve (result[0])
             }
             else {
                 resolve (null)
