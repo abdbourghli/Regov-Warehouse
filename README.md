@@ -3,10 +3,12 @@
 # user
 ### login
 POST /login
+```json
 {
   userName: String,
   password: String
 }
+```
 
 ### Register
 POST /register
