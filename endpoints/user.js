@@ -7,3 +7,14 @@ var users = [
   exports.list = function(req, res){
     res.send({ title: 'Users', users: users });
   };
+
+  exports.login = function(req, res){
+    let userIndex = users.findIndex(x => x.name ===req.body.name);
+    if (userIndex>-1) {
+      next();
+    } else {
+      var err = new Error('cannot find user ' + req.body.name);
+      res.status = 404;
+      res.send(err)
+    }
+  };
