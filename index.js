@@ -1,7 +1,8 @@
 const express = require('express'),
     app = express(),
     path = require('path'),
-    bodyParser = require('body-parser')
+    bodyParser = require('body-parser'),
+    db = require('./scripts/db')
 
 
 // use enviroment port in production or port 5000 for local development or
@@ -14,10 +15,9 @@ app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
-//user endpints
-// app.get('/users', user.list);
-// app.post('/login', user.login)
-
-
+//use express-router for routing
 var base = require("./routes/base");
 app.use(base);
+
+//connect to DB
+db.connect()
