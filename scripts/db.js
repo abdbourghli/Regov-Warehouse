@@ -21,7 +21,7 @@ const commitUserPass = (userID, userHash)=>{
 
 // insert new user to DB
 exports.addUserToDB = async user=>{
-    const inserUserQuery = `INSERT INTO user (userName, email) VALUES 
+    const inserUserQuery = `INSERT INTO users (userName, email) VALUES 
     ("${user.userName}", "${user.email}")`;
     con.query(inserUserQuery, async function (err, result) {
     if (err) throw err;
@@ -59,6 +59,62 @@ const commitUserPass = (userID, userHash)=>{
   });
 }
 
+//search for user by username
+exports.getUserByName = userName=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM users WHERE userName = "${userName}"`, async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                let userData = result[0]
+                //get the user password hash
+                let passwordHash = await (module.exports.getUserHash(userData.ID)) ||''
+                //adding hash to userData
+                userData.passwordHash = passwordHash.passHash
+                
+                resolve (userData)
+            }
+            else {
+                resolve (null)
+            }
+          });
+    })
+}
+
+//search for user by id
+exports.getUserByID = id=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM users WHERE ID = "${id}"`,  async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                let userData = result[0]
+                //get the user password hash
+                let passwordHash = await module.exports.getUserHash(userData.ID) ||''
+                //adding hash to userData
+                userData.passwordHash = passwordHash.passHash
+                
+                resolve (userData)
+            }
+            else {
+                resolve (null)
+            }
+          });
+    })
+}
+
+//get all users
+exports.getAllUsers = ()=>{
+    return new Promise((resolve,reject)=>{
+        con.query(`SELECT * FROM users`,  async function (err, result, fields) {
+            if (err) reject (err);
+            if(result[0]){
+                resolve (result)
+            }
+            else {
+                resolve (null)
+            }
+          });
+    })
+}
 //Conect to DB
 exports.connect = ()=>{con.connect(function(err) {
     if (err) throw err;
