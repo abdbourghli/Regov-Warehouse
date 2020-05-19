@@ -3,10 +3,10 @@
 # user
 ### login
 POST /login
-```json
+```
 {
-  "userName": "String",
-  "password": "String"
+  "userName": String,
+  "password": String
 }
 ```
 
