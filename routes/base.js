@@ -25,20 +25,19 @@ router.get('/users', function (req, res) {
 //create user
 router.post('/register', function (req, res) {
     let userIndex = users.findIndex(x => x.name ===req.body.name);
-    if (userIndex!=-1) {
+    if (userIndex==-1) {
         if (req.body.email){
             users.push({name: req.body.name, email: req.body.email})
             res.send('added new user')
         }
         else{
             var err = new Error('Missing user name');
-            res.status = 404;
+            res.status = 400;
             res.send(err)
         }
-         res.send('added new user')
     } else {
         var err = new Error('User already exists' + req.body.name);
-        res.status = 404;
+        res.status = 400;
         res.send(err)
     }
 })
@@ -54,5 +53,7 @@ router.post('/login', function (req, res) {
         res.send(err)
     }
 })
+
+
 
 module.exports = router
