@@ -83,19 +83,61 @@ router.get('/api/product/:name', async (req,res)=>{
         }
         else{
             res.status = 404
-            res.send(`${req.param.name} doesn't exists.`)
+            res.send(`${req.params.name} doesn't exists.`)
         }
     }
 })
 
 //fetch all products
 router.get('/api/products', async (req,res)=>{
-    const reqProduct = await db.getAllProducts(req.params.name)
+    const reqProduct = await db.getAllProducts()
     if (reqProduct){
         res.send(reqProduct)
     }
     else{
         res.send("No products in DataBase")
+    }
+})
+
+/// products endpoints ///
+
+//add warehouse
+router.post('/api/addwarehouse', async (req, res) =>{
+    //check that warehouse doesn't already exists
+    const warehouseInDB = await db.getWarehouseByName(req.body.name)
+    if (!warehouseInDB) {
+        //add the product to db
+        db.addWarehouseToDB({name:req.body.name})
+        res.send('added new warehouse to database')
+    } else {
+        var err = new Error('warehouse already exists' + req.body.name);
+        res.status = 400;
+        res.send(err)
+    }
+})
+
+//fetch a warehouse
+router.get('/api/warehouse/:name', async (req,res)=>{
+    if (req.params.name){
+        const reqWarehouse = await db.getWarehouseByName(req.params.name)
+        if (reqWarehouse){
+            res.send(reqWarehouse)
+        }
+        else{
+            res.status = 404
+            res.send(`${req.params.name} doesn't exists.`)
+        }
+    }
+})
+
+//fetch all warehouses
+router.get('/api/warehouses', async (req,res)=>{
+    const reqWarehouses = await db.getAllWarehouses()
+    if (reqWarehouses){
+        res.send(reqWarehouses)
+    }
+    else{
+        res.send("No warehouses in DataBase")
     }
 })
 
